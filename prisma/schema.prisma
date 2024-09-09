@@ -12,3 +12,249 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// TABLA AREAS
+model Area {
+  id            Int       @default(autoincrement()) @id
+  name          String    @db.VarChar(255)  //  Nombre del área 
+  responsableID Int                         //  ID del responsable del área
+  createdAt     DateTime  @default(now())   //  Fecha de creación del área
+  updatedAt     DateTime  @updatedAt        //  Fecha de última actualización del área
+  
+  //  RELACIONES CON OTRAS TABLAS
+  stores        Store[]                     //  Almacenes que perteneces al 
+  users         User[]                      //  Usuarios que pertenecen al área
+}
+
+// TABLA USUARIOS
+model User{
+  id          Int             @default(autoincrement()) @id
+  username    String          @db.VarChar(255)  //  Nombre del usuario
+  password    String          @db.VarChar(255)  //  Contraseña del usuario
+  areaId      Int                               //  ID del área a la que pertenece el usuario
+  status      Boolean         @default(true)    //  Estatus del usuario
+  personId    Int             @unique
+  createdAt   DateTime        @default(now())   //  Fecha de creación del usuario
+  updatedAt   DateTime        @updatedAt        //  Fecha de última actualización del usuario
+
+  //  RELACIONES CON OTRAS     TABLAS
+  person      Person          @relation(fields: [personId],references: [id])  //  Relacion con la tabla Persona
+  area        Area            @relation(fields: [areaId], references: [id])   //  Relación con la tabla Area
+  Endorsement Endorsement[]                     //  Relacion con la tabla Firmas                          
+  Voucher     Voucher[]                         //  Relacion con la tabla Vales
+  logs        Log[]                             //  Relacion con la tabla Logs
+  roles       UsersRols[]                       //  Relacion con la tabla Roles
+  stores      Store[]                           //  Relacion con la tabla Almacenes
+}
+
+// TABLA LOGS
+model Log{
+  id          Int       @default(autoincrement()) @id
+  userId      Int                           //  Id del usuario que generó el log
+  action      String    @db.VarChar(255)    //  Acción realizada por el usuario
+  date        DateTime  @default(now())     //  Fecha en la que se realizó la acción
+  details     String    @db.Text            //  Detalles de la acción realizada
+
+  //  RELACIONES ON OTRAS TABLAS
+  user        User      @relation(fields: [userId], references: [id]) //  Relación con la tbla Usuarios
+}
+
+// TABLA ROLES
+model Rol{
+  id              Int               @default(autoincrement()) @id
+  name            String            @db.VarChar(255)    //  Nombre del rol
+
+  //  RELACIONES CON OTRAS TABLAS
+  users           UsersRols[]                           //  Relacion con la tabla Usuarios
+  RolsPermissions RolsPermissions[]                     //  Relacion con la tabla Permisos
+}
+
+// TABLA USUARIOS_ROLES
+model UsersRols{
+  userId      Int                          // Id del usuario
+  rolId       Int                          // Id del rol
+  createdAt   DateTime  @default(now())    // Fecha de creación
+  updatedAt   DateTime  @updatedAt         // Fecha de actualización
+
+
+  @@id([userId, rolId])                    // Identificador unico compuesto
+
+  // RELACIONES CON OTRAS TABLAS
+  rol         Rol       @relation(fields: [rolId], references: [id])  //  Relacion con la tabla  Rol
+  user        User      @relation(fields: [userId], references: [id]) //  Relacion con la tabla Usuario
+}
+
+// TABLA PERMISOS
+model Permission{
+  id              Int               @default(autoincrement()) @id
+  name            String            @db.VarChar(255)      //  Nombre del Permiso "LECTURA", "ESCRITURA"
+
+  //  RELACION CON OTRAS TABLAS
+  RolsPermissions RolsPermissions[]                       //  Relacion con la tabla Permisos
+}
+
+// TABLA ROLES_PERMISOS
+model RolsPermissions{
+  rolId         Int                         // ID del rol
+  permissionId  Int                         // ID del permiso
+  table         String    @db.VarChar(255)  // Nombre de la tabla
+
+  @@id([rolId, permissionId])               // Identificador único compuesto
+
+  // RELACIONES CON OTRAS TABLAS
+  user          Rol       @relation(fields: [rolId], references: [id])  // Relación con la tabla Rol
+  permission    Permission  @relation(fields: [permissionId], references: [id])  // Relación con la tabla Permission
+}
+
+// TABLA PERSONAS
+model Person{
+  id          Int       @default(autoincrement()) @id
+  name        String    @db.VarChar(255)    //  Nombre de la Persona
+  lastname    String    @db.VarChar(255)    //  Apellido de la Persona
+  email       String    @db.VarChar(255)    //  Correo de la Persona
+  phone       String    @db.VarChar(10)     //  Telefono de la Persona
+  status      Boolean   @default(true)      //  Estado de la Persona
+  user        User?
+  createdAt   DateTime  @default(now())     //  Fecha de creación de la Persona
+  updateAt    DateTime  @updatedAt          //  Fecha de actulización de la Persona
+}
+
+// TABLA PROVEEDORES
+model Supplier {
+  id          Int       @default(autoincrement()) @id
+  name        String    @db.VarChar(255)  // Nombre del proveedor
+  address     String?   @db.VarChar(255)  // Dirección del proveedor (opcional)
+  city        String?   @db.VarChar(255)  // Ciudad del proveedor (opcional)
+  country     String?   @db.VarChar(255)  // País del proveedor (opcional)
+  phone       String?   @db.VarChar(10)   // Teléfono del proveedor (opcional)
+  email       String?   @db.VarChar(255)  // Correo electrónico del proveedor (opcional)
+  createdAt   DateTime  @default(now())   // Fecha de creación del proveedor
+  updatedAt   DateTime  @updatedAt        // Fecha de última actualización del proveedor
+
+  // RELACIONES CON OTRAS TABLAS
+  product     Product?                    // Relación con la tabla Productos
+}
+
+// TABLA CATEGORIA (PRODUCTOS)
+model Category{
+  id          Int       @default(autoincrement()) @id
+  name        String    @db.VarChar(255)  // Nombre de la categoría
+  description String?   @db.VarChar(255)  // Descripción de la categoría (opcional)
+  createdAt   DateTime  @default(now())   // Fecha de creación de la categoría
+  updatedAt   DateTime  @updatedAt        // Fecha de última actualización de la categoría
+
+  // RELACIONES CON OTRAS TABLAS
+  product     Product?                    // Relación con la tabla Productos
+}
+
+// TABLA ALMACEN
+model Store {
+  id                  Int                 @default(autoincrement()) @id
+  nombre              String              @db.VarChar(255)  // Nombre del almacén
+  ubicacion           String              @db.VarChar(255)  // Ubicación del almacén
+  areaId              Int                                   // ID del área a la que pertenece el almacén
+  encargadoId         Int                                   // ID del usuario encargado del almacén
+  createdAt           DateTime            @default(now())   // Fecha de creación del almacén
+  updatedAt           DateTime            @updatedAt        // Fecha de última actualización del almacén
+
+  // RELACIONES CON OTRAS TABLAS
+  area                Area                @relation(fields: [areaId], references: [id]) // Relación con la tabla Area
+  encargado           User                @relation(fields: [encargadoId], references: [id]) // Relación con la tabla User
+  products            Inventory[]                           // Relación con la tabla Inventory
+  InventoryMovement_A InventoryMovement[] @relation("OriginStore") // Relación con la tabla InventoryMovement usando el campo "OriginStore"
+  InventoryMovement_B InventoryMovement[] @relation("DestinationStore") // Relación con la tabla InventoryMovement usando el campo "DestinationStore"
+
+
+}
+
+// TABLA UNIDADES DE MEDIDA
+model UnitOfMeasurement {
+  id                Int       @default(autoincrement()) @id
+  name              String    @db.VarChar(50)   // Nombre de la unidad de medida
+  symbol            String    @db.VarChar(10)   // Símbolo de la unidad de medida
+  typeOfMeasure     String    @db.VarChar(20)   // Tipo de medida
+  factorConversion  Float     @default(1.00000) // Factor de conversión
+  baseUnit          Boolean   @default(false)   // Indica si es la unidad base
+  status            Boolean   @default(true)    // Estado de la unidad de medida
+  notes             String?   @db.Text          // Notas adicionales
+  createdAt         DateTime  @default(now())   // Fecha de creación de la unidad de medida
+  updatedAt         DateTime  @updatedAt        // Fecha de última actualización de la unidad de medida
+
+  // RELACIONES CON OTRAS TABLAS
+  product           Product?                    // Relación con la tabla Productos
+
+}
+
+// TABLA PRODUCTOS
+model Product{
+  id                  Int                 @default(autoincrement()) @id
+  name                String              @db.VarChar(255)    // Nombre del producto
+  description         String              @db.Text            // Descripción del producto
+  price               Int                                     // Precio del producto
+  quantityAvailable   Int                                     // Cantidad disponible del producto
+  categoryId          Int                 @unique             // ID de la categoría del producto
+  supplierId          Int                 @unique             // ID del proveedor del producto
+  unitOfMeasurementId Int                 @unique             // ID de la unidad de medida del producto
+
+  // RELACIONES CON OTRAS TABLAS
+  category            Category            @relation(fields: [categoryId],references: [id])  // Relación con la tabla Categoría
+  supplier            Supplier            @relation(fields: [supplierId],references: [id])  // Relación con la tabla Proveedor
+  unitOfMeasurement   UnitOfMeasurement   @relation(fields: [unitOfMeasurementId],references: [id])  // Relación con la tabla Unidad de Medida
+  Stores            Inventory[]                               // Relación con la tabla Inventario
+  movements         InventoryMovement[]                       // Relación con la tabla Movimiento de Inventario
+}
+
+// TABLA INVENTARIOS
+model Inventory {
+  id          Int       @default(autoincrement()) @id
+  cantidad    Int                                 // Representa la cantidad del producto en el almacén.
+  productId   Int       @unique                   // Representa el identificador único del producto.
+  storeId     Int       @unique                   // Representa el identificador único del almacén.
+  createdAt   DateTime  @default(now())           // Representa la fecha y hora de creación del registro.
+  updatedAt   DateTime  @updatedAt                // Representa la fecha y hora de la última actualización del registro.
+
+  // RELACIONES CON OTRAS TABLAS
+  product     Product   @relation(fields: [productId], references: [id])  // Relación con la tabla Producto
+  store       Store     @relation(fields: [storeId], references: [id])    // Relación con la tabla Amacen
+}
+
+// TABLA INVENTARIO_MOVIMIENTO
+model InventoryMovement{
+  id                Int       @default(autoincrement()) @id
+  productId         Int                           // ID del producto involucrado en el movimiento
+  originStoreId     Int?                          // ID del almacén de origen (si aplica)
+  destinationStoreId Int?                         // ID del almacén de destino (si aplica)
+  quantity          Int                           // Cantidad del producto involucrado en el movimiento
+  movementType      String                        // Tipo de movimiento (por ejemplo, "entrada", "salida")
+  movementDate      DateTime  @default(now())     // Fecha y hora del movimiento
+
+// RELACIONES CON OTRAS TABLAS
+  product           Product   @relation(fields: [productId], references: [id])  // Relación con la tabla Producto
+  originStore       Store?    @relation("OriginStore", fields: [originStoreId], references: [id])  // Relación con la tabla Almacén como almacén de origen
+  destinationStore  Store?    @relation("DestinationStore", fields: [destinationStoreId], references: [id])  // Relación con la tabla Almacén como almacén de destino
+}
+
+// TABLA VALES
+model Voucher {
+  id                 Int            @default(autoincrement()) @id
+  dateRequest        DateTime       @default(now())         // Fecha de solicitud del vale
+  userRequestId      Int                                    // ID del usuario que solicita el vale
+  estado             String         @default("Pendiente")   // Estado del vale ("Pendiente", "Aprobado", "Rechazado")
+  storeApproved      Boolean        @default(false)         // Indica si el vale ha sido aprobado por el almacén
+
+  // RELACIONES CON OTRAS TABLAS
+  userRequest        User           @relation(fields: [userRequestId], references: [id])  // Relación con la tabla User como usuario solicitante
+  endorsement        Endorsement[]  // Relación con la tabla Firma
+}
+
+model Endorsement {
+  id                    Int       @default(autoincrement()) @id
+  voucherId             Int       @unique
+  userId                Int       @unique
+  dateEndorsement       DateTime  @default(now())   // Fecha de firma del vale
+  orden_firma           Int                         // Orden de firma
+
+  // RELACIONES CON OTRAS TABLAS
+  user                  User      @relation(fields: [userId], references: [id])  // Relación con la tabla User
+  voucher               Voucher   @relation(fields: [voucherId], references: [id])  // Relación con la tabla Voucher
+}
