@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
@@ -13,38 +14,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// TABLA USUARIOS
+model User{ 
+  id            Int       @default(autoincrement()) @id 
+  username      String    @db.VarChar(255)  // Nombre del usuario 
+  password      String    @db.VarChar(255)  // Contraseña del usuario 
+  areaId        Int                         // ID del área a la que pertenece el usuario 
+  status        Boolean   @default(true)    // Estatus del usuario 
+  personId      Int       @unique 
+  createdAt     DateTime  @default(now())   // Fecha de creación del usuario 
+  updatedAt     DateTime  @updatedAt        // Fecha de última actualización del usuario
+
+  // RELACIONES CON OTRAS TABLAS 
+  person        Person @relation(fields: [personId],references: [id] , onDelete:Cascade ) // Relacion con la tabla Persona 
+  area          Area @relation(fields: [areaId], references: [id]) // Relación con la tabla Area 
+  Endorsement   Endorsement[]               // Relacion con la tabla Firmas
+  Voucher       Voucher[]                   // Relacion con la tabla Vales 
+  logs          Log[]                       // Relacion con la tabla Logs 
+  roles         UsersRols[]                 // Relacion con la tabla Roles 
+  stores        Store[]                     // Relacion con la tabla Almacenes 
+}
+
 // TABLA AREAS
 model Area {
   id            Int       @default(autoincrement()) @id
   name          String    @db.VarChar(255)  //  Nombre del área 
-  responsableID Int                         //  ID del responsable del área
+  responsableId Int                         //  ID del responsable del área
   createdAt     DateTime  @default(now())   //  Fecha de creación del área
+  status        Boolean   @default(true)    //  Estado del area activo o inactivo
   updatedAt     DateTime  @updatedAt        //  Fecha de última actualización del área
   
   //  RELACIONES CON OTRAS TABLAS
   stores        Store[]                     //  Almacenes que perteneces al 
   users         User[]                      //  Usuarios que pertenecen al área
-}
-
-// TABLA USUARIOS
-model User{
-  id          Int             @default(autoincrement()) @id
-  username    String          @db.VarChar(255)  //  Nombre del usuario
-  password    String          @db.VarChar(255)  //  Contraseña del usuario
-  areaId      Int                               //  ID del área a la que pertenece el usuario
-  status      Boolean         @default(true)    //  Estatus del usuario
-  personId    Int             @unique
-  createdAt   DateTime        @default(now())   //  Fecha de creación del usuario
-  updatedAt   DateTime        @updatedAt        //  Fecha de última actualización del usuario
-
-  //  RELACIONES CON OTRAS     TABLAS
-  person      Person          @relation(fields: [personId],references: [id])  //  Relacion con la tabla Persona
-  area        Area            @relation(fields: [areaId], references: [id])   //  Relación con la tabla Area
-  Endorsement Endorsement[]                     //  Relacion con la tabla Firmas                          
-  Voucher     Voucher[]                         //  Relacion con la tabla Vales
-  logs        Log[]                             //  Relacion con la tabla Logs
-  roles       UsersRols[]                       //  Relacion con la tabla Roles
-  stores      Store[]                           //  Relacion con la tabla Almacenes
 }
 
 // TABLA LOGS
@@ -63,6 +65,7 @@ model Log{
 model Rol{
   id              Int               @default(autoincrement()) @id
   name            String            @db.VarChar(255)    //  Nombre del rol
+  status          Boolean           @default(true)      //  Estado del rol
 
   //  RELACIONES CON OTRAS TABLAS
   users           UsersRols[]                           //  Relacion con la tabla Usuarios
@@ -73,6 +76,7 @@ model Rol{
 model UsersRols{
   userId      Int                          // Id del usuario
   rolId       Int                          // Id del rol
+  descripcion String?   @db.VarChar(255)   // Descripcion de la relacion (OPCIONAL)
   createdAt   DateTime  @default(now())    // Fecha de creación
   updatedAt   DateTime  @updatedAt         // Fecha de actualización
 
@@ -88,6 +92,7 @@ model UsersRols{
 model Permission{
   id              Int               @default(autoincrement()) @id
   name            String            @db.VarChar(255)      //  Nombre del Permiso "LECTURA", "ESCRITURA"
+  descripcion     String?           @db.VarChar(255)      //  Descripcion del Permiso (OPCIONAL)
 
   //  RELACION CON OTRAS TABLAS
   RolsPermissions RolsPermissions[]                       //  Relacion con la tabla Permisos
@@ -114,9 +119,10 @@ model Person{
   email       String    @db.VarChar(255)    //  Correo de la Persona
   phone       String    @db.VarChar(10)     //  Telefono de la Persona
   status      Boolean   @default(true)      //  Estado de la Persona
-  user        User?
   createdAt   DateTime  @default(now())     //  Fecha de creación de la Persona
   updateAt    DateTime  @updatedAt          //  Fecha de actulización de la Persona
+  
+  user        User?
 }
 
 // TABLA PROVEEDORES
@@ -128,6 +134,7 @@ model Supplier {
   country     String?   @db.VarChar(255)  // País del proveedor (opcional)
   phone       String?   @db.VarChar(10)   // Teléfono del proveedor (opcional)
   email       String?   @db.VarChar(255)  // Correo electrónico del proveedor (opcional)
+  status      Boolean   @default(true)
   createdAt   DateTime  @default(now())   // Fecha de creación del proveedor
   updatedAt   DateTime  @updatedAt        // Fecha de última actualización del proveedor
 
@@ -142,6 +149,7 @@ model Category{
   description String?   @db.VarChar(255)  // Descripción de la categoría (opcional)
   createdAt   DateTime  @default(now())   // Fecha de creación de la categoría
   updatedAt   DateTime  @updatedAt        // Fecha de última actualización de la categoría
+  status      Boolean   @default(true)    // Estado de la categoria
 
   // RELACIONES CON OTRAS TABLAS
   product     Product?                    // Relación con la tabla Productos
@@ -153,6 +161,7 @@ model Store {
   nombre              String              @db.VarChar(255)  // Nombre del almacén
   ubicacion           String              @db.VarChar(255)  // Ubicación del almacén
   areaId              Int                                   // ID del área a la que pertenece el almacén
+  status              Boolean             @default(true)    // Estado del almacen
   encargadoId         Int                                   // ID del usuario encargado del almacén
   createdAt           DateTime            @default(now())   // Fecha de creación del almacén
   updatedAt           DateTime            @updatedAt        // Fecha de última actualización del almacén
@@ -193,6 +202,7 @@ model Product{
   price               Int                                     // Precio del producto
   quantityAvailable   Int                                     // Cantidad disponible del producto
   categoryId          Int                 @unique             // ID de la categoría del producto
+  status              Boolean             @default(true)      // Estado del producto
   supplierId          Int                 @unique             // ID del proveedor del producto
   unitOfMeasurementId Int                 @unique             // ID de la unidad de medida del producto
 
@@ -239,7 +249,7 @@ model Voucher {
   id                 Int            @default(autoincrement()) @id
   dateRequest        DateTime       @default(now())         // Fecha de solicitud del vale
   userRequestId      Int                                    // ID del usuario que solicita el vale
-  estado             String         @default("Pendiente")   // Estado del vale ("Pendiente", "Aprobado", "Rechazado")
+  status             String         @default("Pendiente")   // Estado del vale ("Pendiente", "Aprobado", "Rechazado")
   storeApproved      Boolean        @default(false)         // Indica si el vale ha sido aprobado por el almacén
 
   // RELACIONES CON OTRAS TABLAS

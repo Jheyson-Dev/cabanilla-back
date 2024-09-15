@@ -2,6 +2,469 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Person {
+  id: Int!
+  name: String!
+  lastname: String!
+  email: String!
+  phone: String!
+  status: Boolean!
+  user: User
+  createdAt: DateTime!
+  updateAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type User {
+  id: ID!
+  username: String!
+  password: String!
+  areaId: Int!
+  status: Boolean!
+  personId: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  person: Person
+}
+
+type Permission {
+  id: Int!
+  name: String!
+  descripcion: String!
+}
+
+type Rol {
+  id: ID!
+  name: String!
+  status: Boolean!
+}
+
+type RolsPermissions {
+  rolId: Int!
+  permissionId: Int!
+  table: String!
+}
+
+type Log {
+  id: ID!
+  userId: Int!
+  action: String!
+  date: DateTime!
+  details: String!
+  user: User
+}
+
+type UsersRols {
+  userId: Int!
+  rolId: Int!
+  descripcion: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Area {
+  id: ID!
+  name: String!
+  responsableId: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User
+}
+
+type Store {
+  id: ID!
+  nombre: String!
+  ubicacion: String!
+  areaId: Int!
+  encargadoId: Int!
+  status: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Voucher {
+  id: ID!
+  dateRequest: DateTime!
+  userRequestId: Int!
+  status: String!
+  storeApproved: Boolean!
+  userRequest: User
+}
+
+type Endorsement {
+  id: ID!
+  voucherId: Int!
+  userId: Int!
+  dateEndorsement: DateTime!
+  orden_firma: Int!
+  user: User
+  voucher: Voucher
+}
+
+type Category {
+  id: ID!
+  name: String!
+  description: String!
+  status: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Supplier {
+  id: ID!
+  name: String!
+  address: String!
+  city: String!
+  country: String!
+  phone: String!
+  email: String!
+  status: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type UnitOfMeasurement {
+  id: ID!
+  name: String!
+  symbol: String!
+  typeOfMeasure: String!
+  factorConversion: Float!
+  baseUnit: Boolean!
+  status: Boolean!
+  notes: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Product {
+  id: ID!
+  name: String!
+  description: String!
+  price: Int!
+  quantityAvailable: Int!
+  categoryId: Int!
+  status: Boolean!
+  supplierId: Int!
+  unitOfMeasurementId: Int!
+}
+
+type Inventory {
+  id: ID!
+  cantidad: Int!
+  productId: Int!
+  storeId: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  product: Product
+  store: Store
+}
+
+type InventoryMovement {
+  id: ID!
+  productId: Int!
+  originStoreId: Int
+  destinationStoreId: Int
+  quantity: Int!
+  movementType: String!
+  movementDate: DateTime!
+  product: Product
+  originStore: Store
+  destinationStore: Store
+}
+
 type Query {
-  helloWorld: String!
+  getAllUsers: [User!]!
+  getUserById(id: Int!): User!
+  getAllPersons: [Person!]!
+  getPersonById(id: Int!): Person!
+  getAllPermissions: [Permission!]!
+  getPermissionById(id: Int!): Permission!
+  getAllRols: [Rol!]!
+  getRolById(id: Int!): Rol!
+  getAllRolsPermissions: [RolsPermissions!]!
+  getRolsPermissionsById(rolId: Float!, permissionId: Float!): RolsPermissions!
+  getAllLogs: [Log!]!
+  getLogById(id: Int!): Log!
+  getAllUsersRols: [UsersRols!]!
+  getUsersRolById(rolId: Int!, userId: Int!): UsersRols!
+  getAllAreas: [Area!]!
+  getAreaById: Area!
+  getAllStores: [Store!]!
+  getStoreById(id: Int!): Store!
+  getAllVouchers: [Voucher!]!
+  getVoucherById(id: Int!): Voucher!
+  getEndorsements: [Endorsement!]!
+  getEndorsement(id: Int!): Endorsement!
+  getAllCategories: [Category!]!
+  getCategoryById(id: Int!): Category!
+  getAllSuppliers: [Supplier!]!
+  getSupplierById(id: Int!): Supplier!
+  getAllUnitsOfMeasurement: [UnitOfMeasurement!]!
+  getUnitOfMeasurement(id: Int!): UnitOfMeasurement!
+  getAllProducts: [Product!]!
+  getProductById(id: Int!): Product!
+  getAllInventories: [Inventory!]!
+  getInventory(id: Int!): Inventory!
+  getInventoryMovements: [InventoryMovement!]!
+  getInventoryMovement(id: Int!): InventoryMovement!
+}
+
+type Mutation {
+  createUser(data: CreateUserDto!): User!
+  updateUser(id: Int!, data: UpdateUserDto!): User!
+  deleteUser(id: Int!): User!
+  createPeson(data: CreatePersonDto!): Person!
+  updatePerson(id: Int!, data: CreatePersonDto!): Person!
+  deletePerson(id: Int!): Person!
+  createPermission(data: CreatePermissionDto!): Permission!
+  updatePermission(id: Int!, data: CreatePermissionDto!): Permission!
+  deletePermission(id: Int!): Permission!
+  createRol(data: CreateRolDto!): Rol!
+  updateRol(id: Int!, data: CreateRolDto!): Rol!
+  deleteRol(id: Int!): Rol!
+  createRolsPermissions(data: CreateRolsPermissionsDto!): RolsPermissions!
+  createLog(data: CreateLogDto!): Log!
+  updateLog(id: Int!, data: UpdateLogDto!): Log!
+  deleteLog(id: Int!): Log!
+  createUsersRols(data: CreateUsersRolsDto!): UsersRols!
+  deleteUsersRols(rolId: Int!, userId: Int!): UsersRols!
+  createArea(data: CreateAreaDto!): Area!
+  updateArea(id: Float!, data: CreateAreaDto!): Area!
+  deleteArea(id: Float!): Area!
+  createStore(data: CreateStoreDto!): Store!
+  updateStore(id: Int!, data: UpdateStoreDto!): Store!
+  deleteStore(id: Int!): Store!
+  createVoucher(data: CreateVoucherDto!): Voucher!
+  updateVoucher(id: Int!, data: UpdateVoucherDto!): Voucher!
+  deleteVoucher(id: Int!): Voucher!
+  createEndorsement(data: CreateEndorsementDto!): Endorsement!
+  updateEndorsement(id: Int!, data: UpdateEndorsementDto!): Endorsement!
+  deleteEndorsement(id: Int!): String!
+  createCategory(createCategoryInput: CreateCategoryDto!): Category!
+  updateCategory(id: Int!, data: UpdateCategoryDto!): Category!
+  deleteCategory(id: Int!): Category!
+  createSupplier(data: CreateSupplierDto!): Supplier!
+  updateSupplier(id: Int!, data: UpdateSupplierDto!): Supplier!
+  deleteSupplier(id: Int!): Supplier!
+  createUnitOfMeasurement(data: CreateUnitOfMeasurementDto!): UnitOfMeasurement!
+  updateUnitOfMeasurement(id: Int!, data: UpdateUnitOfMeasurementDto!): UnitOfMeasurement!
+  deleteUnitOfMeasurement(id: Int!): UnitOfMeasurement!
+  createProduct(data: CreateProductDto!): Product!
+  updateProduct(id: Int!, data: UpdateProductDto!): Product!
+  deleteProduct(id: Int!): Product!
+  createInventory(data: CreateInventoryDto!): Inventory!
+  updateInventory(id: Int!, data: UpdateInventoryDto!): Inventory!
+  deleteInventory(id: Int!): Inventory!
+  createInventoryMovement(data: CreateInventoryMovementDto!): InventoryMovement!
+  updateInventoryMovement(id: Int!, data: UpdateInventoryMovementDto!): InventoryMovement!
+  removeInventoryMovement(id: Int!): InventoryMovement!
+}
+
+input CreateUserDto {
+  username: String!
+  password: String!
+  areaId: Int!
+  personId: Int!
+  status: Boolean!
+}
+
+input UpdateUserDto {
+  username: String
+  password: String
+  areaId: Int!
+  personId: Int!
+  status: Boolean
+}
+
+input CreatePersonDto {
+  name: String!
+  lastname: String!
+  email: String!
+  phone: String!
+  status: Boolean!
+}
+
+input CreatePermissionDto {
+  name: String!
+  descripcion: String
+}
+
+input CreateRolDto {
+  name: String!
+}
+
+input CreateRolsPermissionsDto {
+  rolId: Int!
+  permissionId: Int!
+  table: String!
+}
+
+input CreateLogDto {
+  userId: Int!
+  action: String!
+  date: DateTime!
+  details: String
+}
+
+input UpdateLogDto {
+  userId: Int!
+  action: String
+  date: DateTime
+  details: String
+}
+
+input CreateUsersRolsDto {
+  userId: Int!
+  rolId: Int!
+  descripcion: String
+}
+
+input CreateAreaDto {
+  name: String!
+  responsableId: Int!
+  status: Boolean!
+}
+
+input CreateStoreDto {
+  nombre: String!
+  ubicacion: String!
+  areaId: Int!
+  encargadoId: Int!
+  status: Boolean!
+}
+
+input UpdateStoreDto {
+  nombre: String
+  ubicacion: String
+  areaId: Int!
+  encargadoId: Int!
+  status: Boolean
+}
+
+input CreateVoucherDto {
+  userRequestId: Int!
+}
+
+input UpdateVoucherDto {
+  userRequestId: Int
+  status: String!
+  storeApproved: Boolean!
+}
+
+input CreateEndorsementDto {
+  voucherId: Int!
+  userId: Int!
+  orden_firma: Int!
+}
+
+input UpdateEndorsementDto {
+  voucherId: Int
+  userId: Int
+  orden_firma: Int
+}
+
+input CreateCategoryDto {
+  name: String!
+  description: String!
+  status: Boolean!
+}
+
+input UpdateCategoryDto {
+  name: String
+  description: String
+  status: Boolean
+}
+
+input CreateSupplierDto {
+  name: String!
+  address: String!
+  city: String!
+  country: String!
+  phone: String!
+  email: String!
+  status: Boolean!
+}
+
+input UpdateSupplierDto {
+  name: String
+  address: String
+  city: String
+  country: String
+  phone: String
+  email: String
+  status: Boolean
+}
+
+input CreateUnitOfMeasurementDto {
+  name: String!
+  symbol: String!
+  typeOfMeasure: String!
+  factorConversion: Float!
+  baseUnit: Boolean!
+  status: Boolean!
+  notes: String!
+}
+
+input UpdateUnitOfMeasurementDto {
+  name: String
+  symbol: String
+  typeOfMeasure: String
+  factorConversion: Float
+  baseUnit: Boolean
+  status: Boolean
+  notes: String
+}
+
+input CreateProductDto {
+  name: String!
+  description: String!
+  price: Int!
+  quantityAvailable: Int!
+  categoryId: Int!
+  status: Boolean!
+  supplierId: Int!
+  unitOfMeasurementId: Int!
+}
+
+input UpdateProductDto {
+  name: String
+  description: String
+  price: Int
+  quantityAvailable: Int
+  categoryId: Int
+  status: Boolean
+  supplierId: Int
+  unitOfMeasurementId: Int
+}
+
+input CreateInventoryDto {
+  cantidad: Int!
+  productId: Int!
+  storeId: Int!
+}
+
+input UpdateInventoryDto {
+  cantidad: Int
+  productId: Int!
+  storeId: Int!
+}
+
+input CreateInventoryMovementDto {
+  productId: Int!
+  originStoreId: Int
+  destinationStoreId: Int
+  quantity: Int!
+  movementType: String!
+}
+
+input UpdateInventoryMovementDto {
+  productId: Int
+  originStoreId: Int
+  destinationStoreId: Int
+  quantity: Int
+  movementType: String
 }
