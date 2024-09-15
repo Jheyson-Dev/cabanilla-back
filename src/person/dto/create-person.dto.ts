@@ -46,7 +46,7 @@ export class CreatePersonDto {
   })
   phone: string;
 
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   @IsOptional()
   @IsNotEmpty({ message: 'Status is required' })
   @IsBoolean({ message: 'The field status must be either true or false.' })

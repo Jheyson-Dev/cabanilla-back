@@ -29,10 +29,11 @@ export class CreateUserDto {
   // })
   password: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
   @IsNotEmpty({ message: 'The field areaId cannot be empty.' })
   @IsInt({ message: 'The field areaId must be a valid integer.' })
-  areaId: number;
+  areaId?: number;
 
   @Field(() => Int)
   @IsNotEmpty({ message: 'The field personId cannot be empty.' })

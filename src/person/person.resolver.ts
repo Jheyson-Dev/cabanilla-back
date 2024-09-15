@@ -1,8 +1,24 @@
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Field,
+  Int,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+} from '@nestjs/graphql';
 import { Person } from './entities/person.entity';
 import { PersonService } from './person.service';
-import { type } from 'os';
 import { CreatePersonDto } from './dto/create-person.dto';
+import { User } from 'src/user/entities/user.entity';
+
+@ObjectType()
+export class PersonUser {
+  @Field(() => Person)
+  person: Person;
+  @Field(() => User)
+  user: User;
+}
 
 @Resolver((of) => Person)
 export class PersonResolver {
@@ -21,7 +37,7 @@ export class PersonResolver {
   }
 
   @Mutation(() => Person)
-  async createPeson(
+  async createPerson(
     @Args('data', { type: () => CreatePersonDto })
     data: CreatePersonDto,
   ): Promise<Person> {
@@ -42,5 +58,13 @@ export class PersonResolver {
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Person> {
     return this.personService.delete(id);
+  }
+
+  @Mutation(() => PersonUser)
+  async createPersonAndUser(
+    @Args('data', { type: () => CreatePersonDto }) data: CreatePersonDto,
+  ): Promise<{ person: Person; user: User }> {
+    // Implementation goes here
+    return this.personService.createPersonAndUser(data);
   }
 }

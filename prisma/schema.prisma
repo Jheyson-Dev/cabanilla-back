@@ -19,7 +19,7 @@ model User{
   id            Int       @default(autoincrement()) @id 
   username      String    @db.VarChar(255)  // Nombre del usuario 
   password      String    @db.VarChar(255)  // Contraseña del usuario 
-  areaId        Int                         // ID del área a la que pertenece el usuario 
+  areaId        Int?                         // ID del área a la que pertenece el usuario 
   status        Boolean   @default(true)    // Estatus del usuario 
   personId      Int       @unique 
   createdAt     DateTime  @default(now())   // Fecha de creación del usuario 
@@ -27,8 +27,9 @@ model User{
 
   // RELACIONES CON OTRAS TABLAS 
   person        Person @relation(fields: [personId],references: [id] , onDelete:Cascade ) // Relacion con la tabla Persona 
-  area          Area @relation(fields: [areaId], references: [id]) // Relación con la tabla Area 
-  Endorsement   Endorsement[]               // Relacion con la tabla Firmas
+  area          Area? @relation(fields: [areaId], references: [id]) // Relación con la tabla Area 
+
+  Endorsement   Endorsement[]              // Relacion con la tabla Firmas
   Voucher       Voucher[]                   // Relacion con la tabla Vales 
   logs          Log[]                       // Relacion con la tabla Logs 
   roles         UsersRols[]                 // Relacion con la tabla Roles 
@@ -39,7 +40,7 @@ model User{
 model Area {
   id            Int       @default(autoincrement()) @id
   name          String    @db.VarChar(255)  //  Nombre del área 
-  responsableId Int                         //  ID del responsable del área
+  responsableId Int?                         //  ID del responsable del área
   createdAt     DateTime  @default(now())   //  Fecha de creación del área
   status        Boolean   @default(true)    //  Estado del area activo o inactivo
   updatedAt     DateTime  @updatedAt        //  Fecha de última actualización del área

@@ -18,12 +18,13 @@ export class CreateAreaDto {
   })
   name: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
   @IsNotEmpty({ message: 'The fiel responsableId must be a valid string.' })
   @IsInt({ message: 'The field responsableId must be a valid number.' })
-  responsableId: number;
+  responsableId?: number;
 
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   @IsOptional()
   @IsNotEmpty({ message: 'The field status cannot be empty.' })
   @IsBoolean({ message: 'The field status must be a boolean.' })

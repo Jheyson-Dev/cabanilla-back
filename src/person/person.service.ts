@@ -3,10 +3,16 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Person } from './entities/person.entity';
 import { UpdatePersonDto } from './dto/update-person.dto';
 import { CreatePersonDto } from './dto/create-person.dto';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { UserService } from 'src/user/user.service';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class PersonService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userService: UserService,
+  ) {}
 
   async getAll(): Promise<Person[]> {
     return this.prisma.person.findMany({
@@ -55,5 +61,30 @@ export class PersonService {
     return this.prisma.person.delete({
       where: { id },
     });
+  }
+
+  // OTRAS FUNCIONALIDADES:
+
+  generateRandomPassword(length: number): string {
+    const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+  }
+
+  async createPersonAndUser(
+    personData: CreatePersonDto,
+  ): Promise<{ person: Person; user: User }> {
+    const password = this.generateRandomPassword(8);
+    const person = await this.create(personData);
+    const user = await this.userService.create({
+      username: `${person.name}.${person.lastname}`,
+      password,
+      personId: person.id,
+    });
+    return { person, user };
   }
 }

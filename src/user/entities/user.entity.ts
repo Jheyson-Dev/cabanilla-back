@@ -14,7 +14,7 @@ export class User {
   password: string;
 
   @Field(() => Int)
-  areaId: number;
+  areaId?: number;
 
   @Field(() => Boolean)
   status: boolean;

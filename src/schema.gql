@@ -31,6 +31,11 @@ type User {
   person: Person
 }
 
+type PersonUser {
+  person: Person!
+  user: User!
+}
+
 type Permission {
   id: Int!
   name: String!
@@ -217,9 +222,10 @@ type Mutation {
   createUser(data: CreateUserDto!): User!
   updateUser(id: Int!, data: UpdateUserDto!): User!
   deleteUser(id: Int!): User!
-  createPeson(data: CreatePersonDto!): Person!
+  createPerson(data: CreatePersonDto!): Person!
   updatePerson(id: Int!, data: CreatePersonDto!): Person!
   deletePerson(id: Int!): Person!
+  createPersonAndUser(data: CreatePersonDto!): PersonUser!
   createPermission(data: CreatePermissionDto!): Permission!
   updatePermission(id: Int!, data: CreatePermissionDto!): Permission!
   deletePermission(id: Int!): Permission!
@@ -267,7 +273,7 @@ type Mutation {
 input CreateUserDto {
   username: String!
   password: String!
-  areaId: Int!
+  areaId: Int
   personId: Int!
   status: Boolean!
 }
@@ -285,7 +291,7 @@ input CreatePersonDto {
   lastname: String!
   email: String!
   phone: String!
-  status: Boolean!
+  status: Boolean
 }
 
 input CreatePermissionDto {
@@ -325,8 +331,8 @@ input CreateUsersRolsDto {
 
 input CreateAreaDto {
   name: String!
-  responsableId: Int!
-  status: Boolean!
+  responsableId: Int
+  status: Boolean
 }
 
 input CreateStoreDto {
