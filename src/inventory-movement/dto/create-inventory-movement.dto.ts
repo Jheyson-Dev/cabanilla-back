@@ -1,5 +1,5 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class CreateInventoryMovementDto {
@@ -9,11 +9,13 @@ export class CreateInventoryMovementDto {
   productId: number;
 
   @Field(() => Int, { nullable: true })
+  @IsOptional()
   @IsNotEmpty({ message: 'The field originStoreId cannot be empty.' })
   @IsInt({ message: 'The field originStoreId must be a valid integer.' })
   originStoreId?: number;
 
   @Field(() => Int, { nullable: true })
+  @IsOptional()
   @IsNotEmpty({ message: 'The field destinationStoreId cannot be empty.' })
   @IsInt({ message: 'The field destinationStoreId must be a valid integer.' })
   destinationStoreId?: number;

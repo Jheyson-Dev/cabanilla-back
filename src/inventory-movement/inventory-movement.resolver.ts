@@ -11,7 +11,7 @@ export class InventoryMovementResolver {
   ) {}
 
   @Query(() => [InventoryMovement])
-  async getInventoryMovements(): Promise<InventoryMovement[]> {
+  async getAllInventoryMovements(): Promise<InventoryMovement[]> {
     return this.inventoryMovementService.getAll();
   }
 

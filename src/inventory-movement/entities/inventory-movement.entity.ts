@@ -4,7 +4,7 @@ import { Store } from 'src/store/entities/store.entity';
 
 @ObjectType()
 export class InventoryMovement {
-  @Field(() => ID)
+  @Field(() => Int)
   id: number;
 
   @Field(() => Int)

@@ -12,9 +12,9 @@ export class RolsPermissionsService {
     return this.prisma.rolsPermissions.findMany();
   }
 
-  async getById(rolId: number, permissionId: number): Promise<RolsPermissions> {
+  async getById(id: number): Promise<RolsPermissions> {
     return this.prisma.rolsPermissions.findFirst({
-      where: { rolId, permissionId },
+      where: { id },
     });
   }
 
@@ -29,21 +29,33 @@ export class RolsPermissionsService {
     });
   }
 
-  async udpate(
-    rolId: number,
-    permissionId: number,
-    data: UpdateRolsPermisssionsDto,
-  ): Promise<RolsPermissions> {
-    const { table } = data;
-    return this.prisma.rolsPermissions.update({
-      where: { rolId_permissionId: { rolId, permissionId } },
-      data: { table },
-    });
-  }
+  // async udpate(
+  //   rolId: number,
+  //   permissionId: number,
+  //   data: UpdateRolsPermisssionsDto,
+  // ): Promise<RolsPermissions> {
+  //   const { table } = data;
+  //   return this.prisma.rolsPermissions.update({
+  //     where: { rolId_permissionId: { rolId, permissionId } },
+  //     data: { table },
+  //   });
+  // }
 
-  async delete(rolId: number, permissionId: number): Promise<RolsPermissions> {
-    return this.prisma.rolsPermissions.delete({
-      where: { rolId_permissionId: { rolId, permissionId } },
+  // async delete(rolId: number, permissionId: number): Promise<RolsPermissions> {
+  //   return this.prisma.rolsPermissions.delete({
+  //     where: { rolId_permissionId: { rolId, permissionId } },
+  //   });
+  // }
+
+  // FUNCIONALIDADES ADICIONALES
+
+  async getAllPermissionByRolId(id: number): Promise<RolsPermissions[]> {
+    return this.prisma.rolsPermissions.findMany({
+      where: { rolId: id },
+      include: {
+        permission: true,
+        rol: true,
+      },
     });
   }
 }

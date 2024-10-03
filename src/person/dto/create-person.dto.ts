@@ -28,6 +28,14 @@ export class CreatePersonDto {
   lastname: string;
 
   @Field(() => String)
+  @IsNotEmpty({ message: 'The field dni cannot be empty.' })
+  @IsString({ message: 'The field dni must be a valid string.' })
+  @Length(4, 50, {
+    message: 'The field dni must be between 4 and 50 characters long.',
+  })
+  dni: string;
+
+  @Field(() => String)
   @IsNotEmpty({ message: 'The field email cannot be empty.' })
   @IsEmail({}, { message: 'The field email must be a valid email address.' })
   @Length(4, 50, {

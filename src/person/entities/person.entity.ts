@@ -13,6 +13,9 @@ export class Person {
   lastname: string;
 
   @Field()
+  dni: string;
+
+  @Field()
   email: string;
 
   @Field()
@@ -29,4 +32,13 @@ export class Person {
 
   @Field()
   updateAt: Date;
+}
+
+@ObjectType()
+export class PersonsResult {
+  @Field(() => [Person])
+  users: Person[];
+
+  @Field(() => Int)
+  count: number;
 }

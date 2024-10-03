@@ -9,8 +9,8 @@ export class Permission {
   @Field(() => String)
   name: string;
 
-  @Field(() => String)
-  descripcion: string;
+  @Field(() => String, { nullable: true })
+  descripcion?: string;
 
   // Define the relationship with RolsPermissions if needed
   // @Field(() => [RolsPermissions])

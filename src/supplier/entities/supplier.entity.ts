@@ -1,27 +1,27 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Supplier {
-  @Field(() => ID)
+  @Field(() => Int)
   id: number;
 
   @Field(() => String)
   name: string;
 
-  @Field(() => String)
-  address: string;
+  @Field(() => String, { nullable: true })
+  address?: string;
 
-  @Field(() => String)
-  city: string;
+  @Field(() => String, { nullable: true })
+  city?: string;
 
-  @Field(() => String)
-  country: string;
+  @Field(() => String, { nullable: true })
+  country?: string;
 
-  @Field(() => String)
-  phone: string;
+  @Field(() => String, { nullable: true })
+  phone?: string;
 
-  @Field(() => String)
-  email: string;
+  @Field(() => String, { nullable: true })
+  email?: string;
 
   @Field(() => Boolean)
   status: boolean;

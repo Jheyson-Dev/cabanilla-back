@@ -3,12 +3,15 @@ import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { UseGuards } from '@nestjs/common';
 
 @Resolver()
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => [User])
+  // @UseGuards(AuthGuard)
   async getAllUsers(): Promise<User[]> {
     return this.userService.getAll();
   }

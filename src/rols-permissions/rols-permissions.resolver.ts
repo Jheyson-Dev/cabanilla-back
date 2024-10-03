@@ -16,10 +16,9 @@ export class RolsPermissionsResolver {
 
   @Query(() => RolsPermissions)
   async getRolsPermissionsById(
-    @Args('rolId') rolId: number,
-    @Args('permissionId') permissionId: number,
+    @Args('id') id: number,
   ): Promise<RolsPermissions> {
-    return this.rolsPermissionsService.getById(rolId, permissionId);
+    return this.rolsPermissionsService.getById(id);
   }
 
   @Mutation(() => RolsPermissions)
@@ -28,5 +27,13 @@ export class RolsPermissionsResolver {
     data: CreateRolsPermissionsDto,
   ): Promise<RolsPermissions> {
     return this.rolsPermissionsService.create(data);
+  }
+
+  // FUNCIONALIDADES ADICIONALES
+  @Query(() => [RolsPermissions])
+  async getAllPermissionByRolId(
+    @Args('id') id: number,
+  ): Promise<RolsPermissions[]> {
+    return this.rolsPermissionsService.getAllPermissionByRolId(id);
   }
 }

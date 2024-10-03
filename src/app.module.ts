@@ -16,13 +16,17 @@ import { VoucherModule } from './voucher/voucher.module';
 import { EndorsementModule } from './endorsement/endorsement.module';
 import { CategoryModule } from './category/category.module';
 import { SupplierModule } from './supplier/supplier.module';
-import { UnitOfMeasurementModule } from './unit-of-measurement/unit-of-measurement.module';
 import { ProductModule } from './product/product.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { InventoryMovementModule } from './inventory-movement/inventory-movement.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: true,
@@ -42,10 +46,10 @@ import { InventoryMovementModule } from './inventory-movement/inventory-movement
     EndorsementModule,
     CategoryModule,
     SupplierModule,
-    UnitOfMeasurementModule,
     ProductModule,
     InventoryModule,
     InventoryMovementModule,
+    AuthModule,
   ],
   controllers: [],
 })

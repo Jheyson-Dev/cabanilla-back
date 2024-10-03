@@ -1,7 +1,8 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AreaService } from './area.service';
 import { Area } from './entities/area.entity';
 import { CreateAreaDto } from './dto/create-area.dto';
+import { UpdateAreaDto } from './dto/update-area.dto';
 
 @Resolver()
 export class AreaResolver {
@@ -13,7 +14,10 @@ export class AreaResolver {
   }
 
   @Query(() => Area)
-  async getAreaById(id: number): Promise<Area> {
+  async getAreaById(
+    @Args('id', { type: () => Int })
+    id: number,
+  ): Promise<Area> {
     return this.areaService.getById(id);
   }
 
@@ -26,14 +30,14 @@ export class AreaResolver {
 
   @Mutation(() => Area)
   async updateArea(
-    @Args('id') id: number,
-    @Args('data', { type: () => CreateAreaDto }) data: CreateAreaDto,
+    @Args('id', { type: () => Int }) id: number,
+    @Args('data', { type: () => UpdateAreaDto }) data: UpdateAreaDto,
   ): Promise<Area> {
     return this.areaService.update(id, data);
   }
 
   @Mutation(() => Area)
-  async deleteArea(@Args('id') id: number): Promise<Area> {
+  async deleteArea(@Args('id', { type: () => Int }) id: number): Promise<Area> {
     return this.areaService.delete(id);
   }
 }

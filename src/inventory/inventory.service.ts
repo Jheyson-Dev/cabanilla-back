@@ -9,7 +9,9 @@ export class InventoryService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getAll(): Promise<Inventory[]> {
-    return this.prisma.inventory.findMany();
+    const response = await this.prisma.inventory.findMany();
+    console.log(response);
+    return response;
   }
 
   async getById(id: number): Promise<Inventory> {

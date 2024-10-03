@@ -3,14 +3,17 @@ import { User } from 'src/user/entities/user.entity';
 
 @ObjectType()
 export class Area {
-  @Field(() => ID)
+  @Field(() => Int)
   id: number;
 
   @Field(() => String)
   name: string;
 
-  @Field(() => Int)
-  responsableId: number;
+  @Field(() => Int, { nullable: true })
+  responsableId?: number;
+
+  @Field(() => Boolean)
+  status: boolean;
 
   @Field(() => Date)
   createdAt: Date;
@@ -18,8 +21,8 @@ export class Area {
   @Field(() => Date)
   updatedAt: Date;
 
-  @Field(() => User, { nullable: true })
-  user?: User;
+  @Field(() => [User], { nullable: true })
+  users?: User[];
 
   //   @Field(() => Store, { nullable: true })
   //   store?: Store;

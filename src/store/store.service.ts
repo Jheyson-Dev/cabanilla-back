@@ -15,6 +15,13 @@ export class StoreService {
   async getById(id: number): Promise<Store> {
     return this.prisma.store.findUnique({
       where: { id },
+      include: {
+        products: {
+          include: {
+            product: true,
+          },
+        },
+      },
     });
   }
 

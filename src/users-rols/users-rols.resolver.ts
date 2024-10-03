@@ -2,6 +2,7 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UsersRols } from './entities/users-rols.entity';
 import { UsersRolsService } from './users-rols.service';
 import { CreateUsersRolsDto } from './dto/create-users-rols.dto';
+import { UpdateUsersRolsDto } from './dto/update-users-rols.dto';
 
 @Resolver()
 export class UsersRolsResolver {
@@ -14,10 +15,9 @@ export class UsersRolsResolver {
 
   @Query(() => UsersRols)
   async getUsersRolById(
-    @Args('rolId', { type: () => Int }) rolId: number,
-    @Args('userId', { type: () => Int }) userId: number,
+    @Args('id', { type: () => Int }) id: number,
   ): Promise<UsersRols> {
-    return this.usersRolsService.getById(rolId, userId);
+    return this.usersRolsService.getById(id);
   }
 
   @Mutation(() => UsersRols)
@@ -28,10 +28,17 @@ export class UsersRolsResolver {
   }
 
   @Mutation(() => UsersRols)
-  async deleteUsersRols(
-    @Args('rolId', { type: () => Int }) rolId: number,
-    @Args('userId', { type: () => Int }) userId: number,
+  async updateUsersRols(
+    @Args('id', { type: () => Int }) id: number,
+    @Args('data', { type: () => UpdateUsersRolsDto }) data: UpdateUsersRolsDto,
   ): Promise<UsersRols> {
-    return this.usersRolsService.delete(rolId, userId);
+    return this.usersRolsService.update(id, data);
+  }
+
+  @Mutation(() => UsersRols)
+  async deleteUsersRols(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<UsersRols> {
+    return this.usersRolsService.delete(id);
   }
 }

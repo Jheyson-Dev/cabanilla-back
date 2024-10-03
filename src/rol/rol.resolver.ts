@@ -2,6 +2,7 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { RolService } from './rol.service';
 import { Rol } from './entities/rol.entity';
 import { CreateRolDto } from './dto/create-rol.dto';
+import { UpdateRolDto } from './dto/update-rol.dto';
 
 @Resolver()
 export class RolResolver {
@@ -25,7 +26,7 @@ export class RolResolver {
   @Mutation(() => Rol)
   async updateRol(
     @Args('id', { type: () => Int }) id: number,
-    @Args('data') data: CreateRolDto,
+    @Args('data', { type: () => UpdateRolDto }) data: UpdateRolDto,
   ) {
     return this.rolService.update(id, data);
   }

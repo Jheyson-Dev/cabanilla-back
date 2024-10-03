@@ -18,6 +18,8 @@ export class ProductResolver {
   async getProductById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Product> {
+    const response = await this.productService.getById(id);
+    console.log(JSON.stringify(response));
     return this.productService.getById(id);
   }
 

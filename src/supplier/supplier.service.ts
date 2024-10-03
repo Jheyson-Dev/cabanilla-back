@@ -19,32 +19,15 @@ export class SupplierService {
   }
 
   async create(data: CreateSupplierDto): Promise<Supplier> {
-    const { name, phone, email, address, city, country } = data;
     return this.prisma.supplier.create({
-      data: {
-        name,
-        phone,
-        email,
-        address,
-        city,
-        country,
-      },
+      data,
     });
   }
 
   async update(id: number, data: UpdateSupplierDto): Promise<Supplier> {
-    const { name, phone, email, address, city, country, status } = data;
     return this.prisma.supplier.update({
       where: { id },
-      data: {
-        name,
-        phone,
-        email,
-        address,
-        city,
-        country,
-        status,
-      },
+      data,
     });
   }
 

@@ -3,6 +3,7 @@ import {
   IsDate,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -22,12 +23,13 @@ export class CreateLogDto {
   @MaxLength(255, { message: 'Action is too long' })
   action: string;
 
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
+  @IsOptional()
   @IsNotEmpty({ message: 'Date is required' })
   @IsDate()
-  date: Date;
+  date?: Date;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   @IsString()
-  details?: string;
+  details: string;
 }

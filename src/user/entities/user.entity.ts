@@ -1,6 +1,9 @@
 // src/user/user.types.ts
 import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
+import { Log } from 'src/log/entities/log.entity';
 import { Person } from 'src/person/entities/person.entity';
+import { Rol } from 'src/rol/entities/rol.entity';
+import { UsersRols } from 'src/users-rols/entities/users-rols.entity';
 
 @ObjectType()
 export class User {
@@ -30,4 +33,10 @@ export class User {
 
   @Field(() => Person, { nullable: true })
   person?: Person;
+
+  @Field(() => [UsersRols], { nullable: true })
+  roles?: UsersRols[];
+
+  @Field(() => [Log], { nullable: true })
+  logs?: Log[];
 }

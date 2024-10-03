@@ -24,8 +24,8 @@ export class Inventory {
   updatedAt: Date;
 
   @Field(() => Product, { nullable: true })
-  product?: Product[];
+  product?: Product;
 
   @Field(() => Store, { nullable: true })
-  store?: Store[];
+  store?: Store;
 }

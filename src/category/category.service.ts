@@ -9,7 +9,17 @@ export class CategoryService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getAll(): Promise<Category[]> {
-    return this.prisma.category.findMany();
+    const response = await this.prisma.category.findMany({
+      include: {
+        product: true,
+      },
+    });
+
+    return this.prisma.category.findMany({
+      include: {
+        product: true,
+      },
+    });
   }
 
   async getById(id: number): Promise<Category> {
@@ -19,25 +29,15 @@ export class CategoryService {
   }
 
   async create(data: CreateCategoryDto): Promise<Category> {
-    const { description, name, status } = data;
     return this.prisma.category.create({
-      data: {
-        description,
-        name,
-        status,
-      },
+      data,
     });
   }
 
   async update(id: number, data: UpdateCategoryDto): Promise<Category> {
-    const { description, name, status } = data;
     return this.prisma.category.update({
       where: { id },
-      data: {
-        description,
-        name,
-        status,
-      },
+      data,
     });
   }
   async delete(id: number): Promise<Category> {

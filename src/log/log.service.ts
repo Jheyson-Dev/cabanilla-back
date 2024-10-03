@@ -21,14 +21,8 @@ export class LogService {
   }
 
   async create(data: CreateLogDto): Promise<Log> {
-    const { userId, action, date, details } = data;
     return this.prisma.log.create({
-      data: {
-        userId,
-        action,
-        details,
-        date,
-      },
+      data,
     });
   }
 

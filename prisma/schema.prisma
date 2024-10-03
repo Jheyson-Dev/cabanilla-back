@@ -75,6 +75,7 @@ model Rol{
 
 // TABLA USUARIOS_ROLES
 model UsersRols{
+  id          Int    @default(autoincrement()) @id
   userId      Int                          // Id del usuario
   rolId       Int                          // Id del rol
   descripcion String?   @db.VarChar(255)   // Descripcion de la relacion (OPCIONAL)
@@ -82,7 +83,6 @@ model UsersRols{
   updatedAt   DateTime  @updatedAt         // Fecha de actualización
 
 
-  @@id([userId, rolId])                    // Identificador unico compuesto
 
   // RELACIONES CON OTRAS TABLAS
   rol         Rol       @relation(fields: [rolId], references: [id])  //  Relacion con la tabla  Rol
@@ -100,15 +100,14 @@ model Permission{
 }
 
 // TABLA ROLES_PERMISOS
-model RolsPermissions{
+model RolsPermissions {
+  id            Int       @id @default(autoincrement()) // Identificador único
   rolId         Int                         // ID del rol
   permissionId  Int                         // ID del permiso
   table         String    @db.VarChar(255)  // Nombre de la tabla
 
-  @@id([rolId, permissionId])               // Identificador único compuesto
-
   // RELACIONES CON OTRAS TABLAS
-  user          Rol       @relation(fields: [rolId], references: [id])  // Relación con la tabla Rol
+  rol           Rol       @relation(fields: [rolId], references: [id])  // Relación con la tabla Rol
   permission    Permission  @relation(fields: [permissionId], references: [id])  // Relación con la tabla Permission
 }
 
@@ -117,6 +116,7 @@ model Person{
   id          Int       @default(autoincrement()) @id
   name        String    @db.VarChar(255)    //  Nombre de la Persona
   lastname    String    @db.VarChar(255)    //  Apellido de la Persona
+  dni         String    @db.VarChar(10)     //  Cédula de la Persona  
   email       String    @db.VarChar(255)    //  Correo de la Persona
   phone       String    @db.VarChar(10)     //  Telefono de la Persona
   status      Boolean   @default(true)      //  Estado de la Persona
@@ -140,7 +140,7 @@ model Supplier {
   updatedAt   DateTime  @updatedAt        // Fecha de última actualización del proveedor
 
   // RELACIONES CON OTRAS TABLAS
-  product     Product?                    // Relación con la tabla Productos
+  product     Product[]                    // Relación con la tabla Productos
 }
 
 // TABLA CATEGORIA (PRODUCTOS)
@@ -153,7 +153,7 @@ model Category{
   status      Boolean   @default(true)    // Estado de la categoria
 
   // RELACIONES CON OTRAS TABLAS
-  product     Product?                    // Relación con la tabla Productos
+  product     Product[]                   // Relación con la tabla Productos
 }
 
 // TABLA ALMACEN
@@ -177,50 +177,32 @@ model Store {
 
 }
 
-// TABLA UNIDADES DE MEDIDA
-model UnitOfMeasurement {
-  id                Int       @default(autoincrement()) @id
-  name              String    @db.VarChar(50)   // Nombre de la unidad de medida
-  symbol            String    @db.VarChar(10)   // Símbolo de la unidad de medida
-  typeOfMeasure     String    @db.VarChar(20)   // Tipo de medida
-  factorConversion  Float     @default(1.00000) // Factor de conversión
-  baseUnit          Boolean   @default(false)   // Indica si es la unidad base
-  status            Boolean   @default(true)    // Estado de la unidad de medida
-  notes             String?   @db.Text          // Notas adicionales
-  createdAt         DateTime  @default(now())   // Fecha de creación de la unidad de medida
-  updatedAt         DateTime  @updatedAt        // Fecha de última actualización de la unidad de medida
-
-  // RELACIONES CON OTRAS TABLAS
-  product           Product?                    // Relación con la tabla Productos
-
-}
-
 // TABLA PRODUCTOS
-model Product{
+model Product {
   id                  Int                 @default(autoincrement()) @id
   name                String              @db.VarChar(255)    // Nombre del producto
   description         String              @db.Text            // Descripción del producto
-  price               Int                                     // Precio del producto
+  price               Float                                     // Precio del producto
   quantityAvailable   Int                                     // Cantidad disponible del producto
-  categoryId          Int                 @unique             // ID de la categoría del producto
+  categoryId          Int                                     // ID de la categoría del producto
   status              Boolean             @default(true)      // Estado del producto
-  supplierId          Int                 @unique             // ID del proveedor del producto
-  unitOfMeasurementId Int                 @unique             // ID de la unidad de medida del producto
+  supplierId          Int                              // ID del proveedor del producto
+  // unitOfMeasurementId Int                 @unique             // ID de la unidad de medida del producto
 
   // RELACIONES CON OTRAS TABLAS
-  category            Category            @relation(fields: [categoryId],references: [id])  // Relación con la tabla Categoría
-  supplier            Supplier            @relation(fields: [supplierId],references: [id])  // Relación con la tabla Proveedor
-  unitOfMeasurement   UnitOfMeasurement   @relation(fields: [unitOfMeasurementId],references: [id])  // Relación con la tabla Unidad de Medida
-  Stores            Inventory[]                               // Relación con la tabla Inventario
-  movements         InventoryMovement[]                       // Relación con la tabla Movimiento de Inventario
+  category            Category            @relation(fields: [categoryId], references: [id])  // Relación con la tabla Categoría
+  supplier            Supplier            @relation(fields: [supplierId], references: [id])  // Relación con la tabla Proveedor
+  // unitOfMeasurement   UnitOfMeasurement   @relation(fields: [unitOfMeasurementId], references: [id])  // Relación con la tabla Unidad de Medida
+  stores              Inventory[]                               // Relación con la tabla Inventario
+  movements           InventoryMovement[]                       // Relación con la tabla Movimiento de Inventario
 }
 
 // TABLA INVENTARIOS
 model Inventory {
   id          Int       @default(autoincrement()) @id
   cantidad    Int                                 // Representa la cantidad del producto en el almacén.
-  productId   Int       @unique                   // Representa el identificador único del producto.
-  storeId     Int       @unique                   // Representa el identificador único del almacén.
+  productId   Int                          // Representa el identificador único del producto.
+  storeId     Int                          // Representa el identificador único del almacén.
   createdAt   DateTime  @default(now())           // Representa la fecha y hora de creación del registro.
   updatedAt   DateTime  @updatedAt                // Representa la fecha y hora de la última actualización del registro.
 

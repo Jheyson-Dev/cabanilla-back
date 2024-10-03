@@ -1,4 +1,4 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 import {
   IsBoolean,
   IsNotEmpty,
@@ -7,6 +7,7 @@ import {
   IsString,
   Length,
 } from 'class-validator';
+import { isFloat32Array } from 'util/types';
 
 @InputType()
 export class CreateProductDto {
@@ -26,7 +27,7 @@ export class CreateProductDto {
   })
   description: string;
 
-  @Field(() => Int)
+  @Field(() => Float)
   @IsNotEmpty({ message: 'The field price cannot be empty.' })
   @IsNumber({}, { message: 'The field price must be a number.' })
   price: number;
@@ -41,7 +42,7 @@ export class CreateProductDto {
   @IsNumber({}, { message: 'The field categoryId must be a number.' })
   categoryId: number;
 
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   @IsOptional()
   @IsNotEmpty({ message: 'The field status cannot be empty.' })
   @IsBoolean({ message: 'The field status must be either true or false.' })
@@ -51,9 +52,4 @@ export class CreateProductDto {
   @IsNotEmpty({ message: 'The field supplierId cannot be empty.' })
   @IsNumber({}, { message: 'The field supplierId must be a number.' })
   supplierId: number;
-
-  @Field(() => Int)
-  @IsNotEmpty({ message: 'The field unitOfMeasurementId cannot be empty.' })
-  @IsNumber({}, { message: 'The field unitOfMeasurementId must be a number.' })
-  unitOfMeasurementId: number;
 }

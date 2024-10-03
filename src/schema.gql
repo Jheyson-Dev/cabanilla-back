@@ -2,10 +2,25 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Log {
+  id: ID!
+  userId: Int!
+  action: String!
+  date: DateTime!
+  details: String!
+  user: User
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Person {
   id: Int!
   name: String!
   lastname: String!
+  dni: String!
   email: String!
   phone: String!
   status: Boolean!
@@ -14,10 +29,42 @@ type Person {
   updateAt: DateTime!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
+type PersonsResult {
+  users: [Person!]!
+  count: Int!
+}
+
+type Permission {
+  id: Int!
+  name: String!
+  descripcion: String
+}
+
+type RolsPermissions {
+  id: Int!
+  rolId: Int!
+  permissionId: Int!
+  table: String!
+  permission: Permission
+  rol: Rol
+}
+
+type Rol {
+  id: Int!
+  name: String!
+  status: Boolean!
+  RolsPermissions: [RolsPermissions!]
+}
+
+type UsersRols {
+  id: Int!
+  userId: Int!
+  rolId: Int!
+  descripcion: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  rol: Rol
+}
 
 type User {
   id: ID!
@@ -29,59 +76,56 @@ type User {
   createdAt: DateTime!
   updatedAt: DateTime!
   person: Person
-}
-
-type PersonUser {
-  person: Person!
-  user: User!
-}
-
-type Permission {
-  id: Int!
-  name: String!
-  descripcion: String!
-}
-
-type Rol {
-  id: ID!
-  name: String!
-  status: Boolean!
-}
-
-type RolsPermissions {
-  rolId: Int!
-  permissionId: Int!
-  table: String!
-}
-
-type Log {
-  id: ID!
-  userId: Int!
-  action: String!
-  date: DateTime!
-  details: String!
-  user: User
-}
-
-type UsersRols {
-  userId: Int!
-  rolId: Int!
-  descripcion: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
+  roles: [UsersRols!]
+  logs: [Log!]
 }
 
 type Area {
-  id: ID!
+  id: Int!
   name: String!
-  responsableId: Int!
+  responsableId: Int
+  status: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
-  user: User
+  users: [User!]
+}
+
+type Category {
+  id: Int!
+  name: String!
+  description: String
+  status: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  product: [Product!]
+}
+
+type Product {
+  id: Int!
+  name: String!
+  description: String!
+  price: Float!
+  quantityAvailable: Int!
+  categoryId: Int!
+  status: Boolean!
+  supplierId: Int!
+  category: Category
+  stores: [Inventory!]
+}
+
+type Inventory {
+  id: ID!
+  cantidad: Int!
+  productId: Int!
+  storeId: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  product: Product
+  store: Store
 }
 
 type Store {
-  id: ID!
+  id: Int!
   nombre: String!
   ubicacion: String!
   areaId: Int!
@@ -89,6 +133,7 @@ type Store {
   status: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
+  products: [Inventory!]
 }
 
 type Voucher {
@@ -110,66 +155,21 @@ type Endorsement {
   voucher: Voucher
 }
 
-type Category {
-  id: ID!
-  name: String!
-  description: String!
-  status: Boolean!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
 type Supplier {
-  id: ID!
+  id: Int!
   name: String!
-  address: String!
-  city: String!
-  country: String!
-  phone: String!
-  email: String!
+  address: String
+  city: String
+  country: String
+  phone: String
+  email: String
   status: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
-}
-
-type UnitOfMeasurement {
-  id: ID!
-  name: String!
-  symbol: String!
-  typeOfMeasure: String!
-  factorConversion: Float!
-  baseUnit: Boolean!
-  status: Boolean!
-  notes: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type Product {
-  id: ID!
-  name: String!
-  description: String!
-  price: Int!
-  quantityAvailable: Int!
-  categoryId: Int!
-  status: Boolean!
-  supplierId: Int!
-  unitOfMeasurementId: Int!
-}
-
-type Inventory {
-  id: ID!
-  cantidad: Int!
-  productId: Int!
-  storeId: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  product: Product
-  store: Store
 }
 
 type InventoryMovement {
-  id: ID!
+  id: Int!
   productId: Int!
   originStoreId: Int
   destinationStoreId: Int
@@ -181,23 +181,33 @@ type InventoryMovement {
   destinationStore: Store
 }
 
+type LoginResponse {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type RefreshTokenResponse {
+  token: String!
+}
+
 type Query {
   getAllUsers: [User!]!
   getUserById(id: Int!): User!
-  getAllPersons: [Person!]!
+  getAllPersons(status: Boolean): PersonsResult!
   getPersonById(id: Int!): Person!
   getAllPermissions: [Permission!]!
   getPermissionById(id: Int!): Permission!
   getAllRols: [Rol!]!
   getRolById(id: Int!): Rol!
   getAllRolsPermissions: [RolsPermissions!]!
-  getRolsPermissionsById(rolId: Float!, permissionId: Float!): RolsPermissions!
+  getRolsPermissionsById(id: Float!): RolsPermissions!
+  getAllPermissionByRolId(id: Float!): [RolsPermissions!]!
   getAllLogs: [Log!]!
   getLogById(id: Int!): Log!
   getAllUsersRols: [UsersRols!]!
-  getUsersRolById(rolId: Int!, userId: Int!): UsersRols!
+  getUsersRolById(id: Int!): UsersRols!
   getAllAreas: [Area!]!
-  getAreaById: Area!
+  getAreaById(id: Int!): Area!
   getAllStores: [Store!]!
   getStoreById(id: Int!): Store!
   getAllVouchers: [Voucher!]!
@@ -208,13 +218,11 @@ type Query {
   getCategoryById(id: Int!): Category!
   getAllSuppliers: [Supplier!]!
   getSupplierById(id: Int!): Supplier!
-  getAllUnitsOfMeasurement: [UnitOfMeasurement!]!
-  getUnitOfMeasurement(id: Int!): UnitOfMeasurement!
   getAllProducts: [Product!]!
   getProductById(id: Int!): Product!
   getAllInventories: [Inventory!]!
   getInventory(id: Int!): Inventory!
-  getInventoryMovements: [InventoryMovement!]!
+  getAllInventoryMovements: [InventoryMovement!]!
   getInventoryMovement(id: Int!): InventoryMovement!
 }
 
@@ -223,24 +231,27 @@ type Mutation {
   updateUser(id: Int!, data: UpdateUserDto!): User!
   deleteUser(id: Int!): User!
   createPerson(data: CreatePersonDto!): Person!
-  updatePerson(id: Int!, data: CreatePersonDto!): Person!
+  updatePerson(id: Int!, data: UpdatePersonDto!): Person!
   deletePerson(id: Int!): Person!
-  createPersonAndUser(data: CreatePersonDto!): PersonUser!
+  createPersonAndUser(data: CreatePersonDto!, id: Int!): Person!
+  updatePersonAndUser(id: Int!, id_table_rol: Int!, id_rol: Int!, data: UpdatePersonDto!): Person!
+  deletePersonAndUser(id: Int!): Person!
   createPermission(data: CreatePermissionDto!): Permission!
   updatePermission(id: Int!, data: CreatePermissionDto!): Permission!
   deletePermission(id: Int!): Permission!
   createRol(data: CreateRolDto!): Rol!
-  updateRol(id: Int!, data: CreateRolDto!): Rol!
+  updateRol(id: Int!, data: UpdateRolDto!): Rol!
   deleteRol(id: Int!): Rol!
   createRolsPermissions(data: CreateRolsPermissionsDto!): RolsPermissions!
   createLog(data: CreateLogDto!): Log!
   updateLog(id: Int!, data: UpdateLogDto!): Log!
   deleteLog(id: Int!): Log!
   createUsersRols(data: CreateUsersRolsDto!): UsersRols!
-  deleteUsersRols(rolId: Int!, userId: Int!): UsersRols!
+  updateUsersRols(id: Int!, data: UpdateUsersRolsDto!): UsersRols!
+  deleteUsersRols(id: Int!): UsersRols!
   createArea(data: CreateAreaDto!): Area!
-  updateArea(id: Float!, data: CreateAreaDto!): Area!
-  deleteArea(id: Float!): Area!
+  updateArea(id: Int!, data: UpdateAreaDto!): Area!
+  deleteArea(id: Int!): Area!
   createStore(data: CreateStoreDto!): Store!
   updateStore(id: Int!, data: UpdateStoreDto!): Store!
   deleteStore(id: Int!): Store!
@@ -250,15 +261,12 @@ type Mutation {
   createEndorsement(data: CreateEndorsementDto!): Endorsement!
   updateEndorsement(id: Int!, data: UpdateEndorsementDto!): Endorsement!
   deleteEndorsement(id: Int!): String!
-  createCategory(createCategoryInput: CreateCategoryDto!): Category!
+  createCategory(data: CreateCategoryDto!): Category!
   updateCategory(id: Int!, data: UpdateCategoryDto!): Category!
   deleteCategory(id: Int!): Category!
   createSupplier(data: CreateSupplierDto!): Supplier!
   updateSupplier(id: Int!, data: UpdateSupplierDto!): Supplier!
   deleteSupplier(id: Int!): Supplier!
-  createUnitOfMeasurement(data: CreateUnitOfMeasurementDto!): UnitOfMeasurement!
-  updateUnitOfMeasurement(id: Int!, data: UpdateUnitOfMeasurementDto!): UnitOfMeasurement!
-  deleteUnitOfMeasurement(id: Int!): UnitOfMeasurement!
   createProduct(data: CreateProductDto!): Product!
   updateProduct(id: Int!, data: UpdateProductDto!): Product!
   deleteProduct(id: Int!): Product!
@@ -268,6 +276,8 @@ type Mutation {
   createInventoryMovement(data: CreateInventoryMovementDto!): InventoryMovement!
   updateInventoryMovement(id: Int!, data: UpdateInventoryMovementDto!): InventoryMovement!
   removeInventoryMovement(id: Int!): InventoryMovement!
+  login(data: LoginInput!): LoginResponse!
+  refreshToken(token: String!): RefreshTokenResponse!
 }
 
 input CreateUserDto {
@@ -289,8 +299,18 @@ input UpdateUserDto {
 input CreatePersonDto {
   name: String!
   lastname: String!
+  dni: String!
   email: String!
   phone: String!
+  status: Boolean
+}
+
+input UpdatePersonDto {
+  name: String
+  lastname: String
+  dni: String
+  email: String
+  phone: String
   status: Boolean
 }
 
@@ -301,6 +321,12 @@ input CreatePermissionDto {
 
 input CreateRolDto {
   name: String!
+  status: Boolean
+}
+
+input UpdateRolDto {
+  name: String
+  status: Boolean
 }
 
 input CreateRolsPermissionsDto {
@@ -312,8 +338,8 @@ input CreateRolsPermissionsDto {
 input CreateLogDto {
   userId: Int!
   action: String!
-  date: DateTime!
-  details: String
+  date: DateTime
+  details: String!
 }
 
 input UpdateLogDto {
@@ -329,8 +355,20 @@ input CreateUsersRolsDto {
   descripcion: String
 }
 
+input UpdateUsersRolsDto {
+  userId: Int
+  rolId: Int
+  descripcion: String
+}
+
 input CreateAreaDto {
   name: String!
+  responsableId: Int
+  status: Boolean
+}
+
+input UpdateAreaDto {
+  name: String
   responsableId: Int
   status: Boolean
 }
@@ -375,8 +413,8 @@ input UpdateEndorsementDto {
 
 input CreateCategoryDto {
   name: String!
-  description: String!
-  status: Boolean!
+  description: String
+  status: Boolean
 }
 
 input UpdateCategoryDto {
@@ -387,12 +425,12 @@ input UpdateCategoryDto {
 
 input CreateSupplierDto {
   name: String!
-  address: String!
-  city: String!
-  country: String!
-  phone: String!
-  email: String!
-  status: Boolean!
+  address: String
+  city: String
+  country: String
+  phone: String
+  email: String
+  status: Boolean
 }
 
 input UpdateSupplierDto {
@@ -405,46 +443,24 @@ input UpdateSupplierDto {
   status: Boolean
 }
 
-input CreateUnitOfMeasurementDto {
-  name: String!
-  symbol: String!
-  typeOfMeasure: String!
-  factorConversion: Float!
-  baseUnit: Boolean!
-  status: Boolean!
-  notes: String!
-}
-
-input UpdateUnitOfMeasurementDto {
-  name: String
-  symbol: String
-  typeOfMeasure: String
-  factorConversion: Float
-  baseUnit: Boolean
-  status: Boolean
-  notes: String
-}
-
 input CreateProductDto {
   name: String!
   description: String!
-  price: Int!
+  price: Float!
   quantityAvailable: Int!
   categoryId: Int!
-  status: Boolean!
+  status: Boolean
   supplierId: Int!
-  unitOfMeasurementId: Int!
 }
 
 input UpdateProductDto {
   name: String
   description: String
-  price: Int
+  price: Float
   quantityAvailable: Int
   categoryId: Int
   status: Boolean
   supplierId: Int
-  unitOfMeasurementId: Int
 }
 
 input CreateInventoryDto {
@@ -473,4 +489,9 @@ input UpdateInventoryMovementDto {
   destinationStoreId: Int
   quantity: Int
   movementType: String
+}
+
+input LoginInput {
+  username: String!
+  password: String!
 }

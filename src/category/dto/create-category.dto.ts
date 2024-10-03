@@ -17,15 +17,16 @@ export class CreateCategoryDto {
   })
   name: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsNotEmpty({ message: 'The field description cannot be empty.' })
   @IsString({ message: 'The field description must be a valid string.' })
   @Length(4, 255, {
     message: 'The field description must be between 4 and 255 characters long.',
   })
-  description: string;
+  description?: string;
 
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   @IsOptional()
   @IsBoolean({ message: 'The field status must be either true or false.' })
   status?: boolean;

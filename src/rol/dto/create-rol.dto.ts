@@ -1,6 +1,12 @@
 import { Field, InputType } from '@nestjs/graphql';
 
-import { IsNotEmpty, IsString, Length } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 @InputType()
 export class CreateRolDto {
@@ -11,4 +17,9 @@ export class CreateRolDto {
     message: 'The field name must be between 3 and 50 characters long.',
   })
   name: string;
+
+  @Field(() => Boolean, { nullable: true })
+  @IsOptional()
+  @IsBoolean({ message: 'The field status must be a boolean.' })
+  status?: boolean;
 }

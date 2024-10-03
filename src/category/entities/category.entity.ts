@@ -1,15 +1,16 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Product } from 'src/product/entities/product.entity';
 
 @ObjectType()
 export class Category {
-  @Field(() => ID)
+  @Field(() => Int)
   id: number;
 
   @Field(() => String)
   name: string;
 
-  @Field(() => String)
-  description: string;
+  @Field(() => String, { nullable: true })
+  description?: string;
 
   @Field(() => Boolean)
   status: boolean;
@@ -20,6 +21,6 @@ export class Category {
   @Field(() => Date)
   updatedAt: Date;
 
-  //   @Field(() => Product)
-  //   product: Product;
+  @Field(() => [Product], { nullable: true })
+  product?: Product[];
 }

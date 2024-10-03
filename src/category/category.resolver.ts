@@ -23,7 +23,7 @@ export class CategoryResolver {
 
   @Mutation(() => Category)
   async createCategory(
-    @Args('createCategoryInput', { type: () => CreateCategoryDto })
+    @Args('data', { type: () => CreateCategoryDto })
     data: CreateCategoryDto,
   ): Promise<Category> {
     return this.categoryService.create(data);

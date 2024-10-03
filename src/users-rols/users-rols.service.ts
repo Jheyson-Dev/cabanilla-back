@@ -2,44 +2,63 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersRols } from './entities/users-rols.entity';
 import { CreateUsersRolsDto } from './dto/create-users-rols.dto';
+import { UpdateUsersRolsDto } from './dto/update-users-rols.dto';
 
 @Injectable()
 export class UsersRolsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getAll(): Promise<UsersRols[]> {
-    return this.prisma.usersRols.findMany();
+    return this.prisma.usersRols.findMany({
+      include: {
+        rol: {
+          include: {
+            RolsPermissions: {
+              include: {
+                permission: true,
+              },
+            },
+          },
+        },
+      },
+    });
   }
 
-  async getById(rolId: number, userId: number): Promise<UsersRols> {
+  async getById(id: number): Promise<UsersRols> {
     return this.prisma.usersRols.findUnique({
-      where: { userId_rolId: { rolId, userId } },
+      where: {
+        id,
+      },
+      include: {
+        rol: {
+          include: {
+            RolsPermissions: {
+              include: {
+                permission: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
   async create(data: CreateUsersRolsDto): Promise<UsersRols> {
-    const { rolId, userId } = data;
     return this.prisma.usersRols.create({
-      data: {
-        rolId,
-        userId,
-      },
+      data,
     });
   }
 
-  async update(rolId: number, userId: number): Promise<UsersRols> {
+  async update(id: number, data: UpdateUsersRolsDto): Promise<UsersRols> {
     return this.prisma.usersRols.update({
-      where: { userId_rolId: { rolId, userId } },
-      data: {
-        rolId,
-        userId,
-      },
+      where: { id },
+      data,
     });
   }
 
-  async delete(rolId: number, userId: number): Promise<UsersRols> {
+  async delete(id: number): Promise<UsersRols> {
     return this.prisma.usersRols.delete({
-      where: { userId_rolId: { rolId, userId } },
+      where: { id },
     });
   }
 }

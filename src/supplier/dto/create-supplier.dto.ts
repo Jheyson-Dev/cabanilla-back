@@ -19,51 +19,56 @@ export class CreateSupplierDto {
   })
   name: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsNotEmpty({ message: 'The field address cannot be empty.' })
   @IsString({ message: 'The field address must be a valid string.' })
-  @Length(3, 50, {
-    message: 'The field address must be between 3 and 20 characters long.',
-  })
-  address: string;
+  // @Length(3, 50, {
+  //   message: 'The field address must be between 3 and 20 characters long.',
+  // })
+  address?: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsNotEmpty({ message: 'The field city cannot be empty.' })
   @IsString({ message: 'The field city must be a valid string.' })
   @Length(3, 50, {
     message: 'The field city must be between 3 and 20 characters long.',
   })
-  city: string;
+  city?: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsNotEmpty({ message: 'The field country cannot be empty.' })
   @IsString({ message: 'The field country must be a valid string.' })
-  @Length(3, 50, {
-    message: 'The field country must be between 3 and 20 characters long.',
-  })
-  country: string;
+  // @Length(2, 50, {
+  //   message: 'The field country must be between 3 and 20 characters long.',
+  // })
+  country?: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsNotEmpty({ message: 'The field phone cannot be empty.' })
   @IsString({ message: 'The field phone must be a valid string.' })
-  @IsPhoneNumber('PE', {
-    message: 'The field phone must be a valid phone number.',
-  })
-  @Length(8, 11, {
-    message: 'The field phone must be between 8 and 11 characters long.',
-  })
-  phone: string;
+  // @IsPhoneNumber('PE', {
+  //   message: 'The field phone must be a valid phone number.',
+  // })
+  // @Length(8, 11, {
+  //   message: 'The field phone must be between 8 and 11 characters long.',
+  // })
+  phone?: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsNotEmpty({ message: 'The field email cannot be empty.' })
   @IsString({ message: 'The field email must be a valid string.' })
-  @Length(3, 50, {
-    message: 'The field email must be between 3 and 20 characters long.',
-  })
-  @IsEmail({}, { message: 'The field email must be a valid email address.' })
-  email: string;
+  // @Length(3, 50, {
+  //   message: 'The field email must be between 3 and 20 characters long.',
+  // })
+  // @IsEmail({}, { message: 'The field email must be a valid email address.' })
+  email?: string;
 
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   @IsOptional()
   @IsBoolean({ message: 'The field status must be either true or false.' })
   status?: boolean;
